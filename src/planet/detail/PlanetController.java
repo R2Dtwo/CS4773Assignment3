@@ -63,6 +63,9 @@ public class PlanetController implements Initializable
     {
     	FileChooser fileChooser = new FileChooser();
 		File file = fileChooser.showOpenDialog(new Stage());
+		if (file == null)
+			return;
+
 		savePlanetImage(file.getAbsolutePath());
     }
     
@@ -76,7 +79,7 @@ public class PlanetController implements Initializable
     		planetImage.setId(imagePath);
     	}
     	catch (FileNotFoundException e)
-    	{//
+    	{
     		System.err.println("Error: invalid file\n" + e.getLocalizedMessage());
     	}
     }
@@ -86,9 +89,7 @@ public class PlanetController implements Initializable
     {
     	FileChooser fileChooser = new FileChooser();
     	fileChooser.getExtensionFilters().add(new ExtensionFilter("TXT files", "*.txt"));
-    	
     	File file = fileChooser.showSaveDialog(new Stage());
-    	
     	if (file == null)
     		return;
     	
@@ -163,13 +164,32 @@ public class PlanetController implements Initializable
     // delegate??
     private boolean isPlanetReadyToSave( )
     {
-    	String name = planetName.getText();
+    	boolean returnCode = false;
+    	String imageId = planetImage.getId();
     	
-    	// do I need to check the other fields too??
-    	if (name.equals(""))
-    		return false;
+    	if (imageId.compareTo("images/no_image.png") == 0)
+    		System.err.println("Error: cannot save file\nNo image selected");
+    	else if (isEmptyString(planetName.getText()))
+    		System.err.println("Error: cannot save file\nNo name specified");
+    	else if (isEmptyString(planetDiameterKM.getText()))
+    		System.err.println("Error: cannot save file\nNo diameter specified");
+    	else if (isEmptyString(planetMeanSurfaceTempC.getText()))
+    		System.err.println("Error: cannot save file\nNo temperature specified");
+    	else if (isEmptyString(planetNumberOfMoons.getText()))
+    		System.err.println("Error: cannot save file\nNo number of moons specified");
+    	else
+    		returnCode = true;
+
+    	return returnCode;
+    }
+    
+    // delegate??
+    private boolean isEmptyString( String stringToCheck )
+    {
+    	if (stringToCheck.isEmpty())
+    		return true;
     	
-    	return true;
+    	return false;
     }
     
     // delegate??
