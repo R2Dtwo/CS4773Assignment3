@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 
 public class PlanetController implements Initializable
 {
+	//Alif(a) was here
     @FXML
     private ImageView planetImage;
 
