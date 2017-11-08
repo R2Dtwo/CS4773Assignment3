@@ -76,7 +76,7 @@ public class PlanetController implements Initializable
     		planetImage.setId(imagePath);
     	}
     	catch (FileNotFoundException e)
-    	{
+    	{//
     		System.err.println("Error: invalid file\n" + e.getLocalizedMessage());
     	}
     }
