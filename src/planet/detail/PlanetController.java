@@ -14,7 +14,10 @@ import java.util.Scanner;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -22,6 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import planet.delegators.Planet;
 
 public class PlanetController implements Initializable
 {
@@ -52,10 +56,13 @@ public class PlanetController implements Initializable
     @FXML
     private Label fancyPlanetName;
     
+    private Planet planet;
+    
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1)
 	{
-		savePlanetImage("images/no_image.png");	
+		planet = new Planet();
+		setPlanetImage("images/no_image.png");
 	}
 
     @FXML
@@ -66,30 +73,30 @@ public class PlanetController implements Initializable
 		if (file == null)
 			return;
 
-		savePlanetImage(file.getAbsolutePath());
+		setPlanetImage(file.getAbsolutePath());
     }
     
-    // delegate??
-    private void savePlanetImage( String imagePath )
+    private void setPlanetImage( String imagePath )
     {
-    	try
-    	{
-    		Image image = new Image(new FileInputStream(imagePath));
-    		planetImage.setImage(image);
-    		planetImage.setId(imagePath);
-    	}
-    	catch (FileNotFoundException e)
-    	{
-    		System.err.println("Error: invalid file\n" + e.getLocalizedMessage());
-    	}
+    	planet.setPlanetImage(imagePath);
+		planetImage.setImage(planet.getPlanetImage());
+		planetImage.setId(planet.getPlanetImagePath());
     }
 
     @FXML
     void loadPlanet( ActionEvent event )
     {
+    	Alert alert = new Alert(AlertType.CONFIRMATION);
+    	alert.setTitle("OK to Overwrite?");
+    	alert.setContentText("Are you sure you want to overwrite the field values?");
+    	alert.showAndWait();
+    	
+    	if (alert.getResult() == ButtonType.CANCEL)
+    		return;
+    	
     	FileChooser fileChooser = new FileChooser();
     	fileChooser.getExtensionFilters().add(new ExtensionFilter("TXT files", "*.txt"));
-    	File file = fileChooser.showSaveDialog(new Stage());
+    	File file = fileChooser.showOpenDialog(new Stage());
     	if (file == null)
     		return;
     	
@@ -102,7 +109,7 @@ public class PlanetController implements Initializable
     	try
     	{
     		Scanner scanner = new Scanner(file);
-    		savePlanetImage(scanner.nextLine());
+    		setPlanetImage(scanner.nextLine());
     		readPlanetName(scanner.nextLine());
     		readPlanetDiameter(scanner.nextLine());
     		readPlanetTemperature(scanner.nextLine());
@@ -111,11 +118,11 @@ public class PlanetController implements Initializable
     	}
     	catch (FileNotFoundException e)
     	{
-    		System.err.println("Error: file not found\n" + e.getLocalizedMessage());
+    		planet.showErrorAlert("Error: file not found\n" + e.getLocalizedMessage());
     	}
     	catch (NoSuchElementException e)
     	{
-    		System.err.println("Error: could not load planet information\n" + e.getLocalizedMessage());
+    		planet.showErrorAlert("Error: could not load planet information\n" + e.getLocalizedMessage());
     	}
     }
     
@@ -168,15 +175,15 @@ public class PlanetController implements Initializable
     	String imageId = planetImage.getId();
     	
     	if (imageId.compareTo("images/no_image.png") == 0)
-    		System.err.println("Error: cannot save file\nNo image selected");
+    		planet.showErrorAlert("Error: cannot save file\nNo image selected");
     	else if (isEmptyString(planetName.getText()))
-    		System.err.println("Error: cannot save file\nNo name specified");
+    		planet.showErrorAlert("Error: cannot save file\nNo name specified");
     	else if (isEmptyString(planetDiameterKM.getText()))
-    		System.err.println("Error: cannot save file\nNo diameter specified");
+    		planet.showErrorAlert("Error: cannot save file\nNo diameter specified");
     	else if (isEmptyString(planetMeanSurfaceTempC.getText()))
-    		System.err.println("Error: cannot save file\nNo temperature specified");
+    		planet.showErrorAlert("Error: cannot save file\nNo temperature specified");
     	else if (isEmptyString(planetNumberOfMoons.getText()))
-    		System.err.println("Error: cannot save file\nNo number of moons specified");
+    		planet.showErrorAlert("Error: cannot save file\nNo number of moons specified");
     	else
     		returnCode = true;
 
@@ -217,7 +224,7 @@ public class PlanetController implements Initializable
     	}
     	catch (IOException e)
     	{
-    		System.err.println("Error: Did not write Planet to file\n" + e.getLocalizedMessage());
+    		planet.showErrorAlert("Error: Did not write Planet to file\n" + e.getLocalizedMessage());
     	}
     }
     
@@ -240,14 +247,14 @@ public class PlanetController implements Initializable
     	String nameOfPlanet = planetName.getText();
 
     	if (nameOfPlanet.length() < 0 || nameOfPlanet.length() > 256)
-    		System.err.println("Error: Planet name must be between 1 and 256 characters long");
+    		planet.showErrorAlert("Error: Planet name must be between 1 and 256 characters long");
     	else if (nameOfPlanet.matches("^[A-Za-z0-9 \\-\\.]+$"))
     	{
     		fancyPlanetName.setText(nameOfPlanet);
     		return;
     	}
     	else
-    		System.err.println("Error: Planet name contains invalid characters [A-Za-z0-9 -.]");
+    		planet.showErrorAlert("Error: Planet name contains invalid characters [A-Za-z0-9 -.]");
     	
     	planetName.setText("");
     }
@@ -278,7 +285,7 @@ public class PlanetController implements Initializable
     	{
     		planetDiameterKM.setText("");
     		planetDiameterM.setText("");
-    		System.err.println("Error: Invalid diameter (KM) input\n" + e.getLocalizedMessage());
+    		planet.showErrorAlert("Error: Invalid diameter (KM) input\n" + e.getLocalizedMessage());
     	}
     }
     
@@ -305,7 +312,7 @@ public class PlanetController implements Initializable
     	{
     		planetMeanSurfaceTempC.setText("");
     		planetMeanSurfaceTempF.setText("");
-    		System.err.println("Error: Invalid temperature (C) input\n" + e.getLocalizedMessage());
+    		planet.showErrorAlert("Error: Invalid temperature (C) input\n" + e.getLocalizedMessage());
     	}
     }
     
@@ -331,7 +338,7 @@ public class PlanetController implements Initializable
     	catch (NumberFormatException e)
     	{
     		planetNumberOfMoons.setText("");
-    		System.err.println("Error: Invalid Integer input\n" + e.getLocalizedMessage());
+    		planet.showErrorAlert("Error: Invalid Integer input\n" + e.getLocalizedMessage());
     	}
     }
 }
