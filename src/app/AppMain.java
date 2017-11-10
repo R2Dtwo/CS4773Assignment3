@@ -26,7 +26,7 @@ public class AppMain extends Application
 	@Override
 	public void start(Stage primaryStage) throws Exception
 	{
-		
+		// do not make a constructor for this
 		PlanetController controller = new PlanetController();
 
 		FXMLLoader loader = new FXMLLoader(controller.getClass().getResource("PlanetView.fxml"));
