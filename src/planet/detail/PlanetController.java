@@ -84,7 +84,7 @@ public class PlanetController implements Initializable {
 	    		return;
 	    	
 	    	loadPlanetInformationFromFile(file);
-//	    	new PlanetBuilder(file);
+//	    	new PlanetBuilder();
     }
     
     public void loadPlanetInformationFromFile( File file ) {
@@ -112,7 +112,7 @@ public class PlanetController implements Initializable {
     private void readPlanetName( String name ) {
     		planet.savePlanetName(name);
     		planetName.setText(planet.getPlanetName());
-	    	fancyPlanetName.setText(planet.getPlanetName());
+	    		fancyPlanetName.setText(planet.getPlanetName());
     }
     
     private void readPlanetDiameter( String diameterKM ) {
@@ -144,6 +144,8 @@ public class PlanetController implements Initializable {
     @FXML
     void setPlanetName( ActionEvent event ) {
 	    	readPlanetName(planetName.getText());
+//    		planetName.setText(planet.getPlanetName());
+//	    	fancyPlanetName.setText(planet.getPlanetName());
     }
     
     @FXML
@@ -163,6 +165,7 @@ public class PlanetController implements Initializable {
     
     @FXML
     void savePlanet( ActionEvent event ) {
-	    	new PlanetBuilder(planetImage, planetName, planetDiameterKM, planetMeanSurfaceTempC, planetNumberOfMoons);    	
+	    	new PlanetBuilder(planetImage.getId(), planetName.getText(), planetDiameterKM.getText()
+	    			, planetMeanSurfaceTempC.getText(), planetNumberOfMoons.getText() );    	
     }
 }

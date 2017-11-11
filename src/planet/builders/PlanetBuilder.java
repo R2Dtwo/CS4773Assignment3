@@ -8,8 +8,12 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -18,20 +22,27 @@ import planet.delegators.Planet;
 
 public class PlanetBuilder 
 {
-    private ImageView planetImage;   
-    
-    private TextField planetName;
-    private TextField planetDiameterKM;
-    private TextField planetMeanSurfaceTempC;
-    private TextField planetNumberOfMoons;
+//    private ImageView planetImage;   
+//    
+//    private TextField planetName;
+//    private TextField planetDiameterKM;
+//    private TextField planetMeanSurfaceTempC;
+//    private TextField planetNumberOfMoons;
         
+
+	private String imageId;
+	private String planetName;
+	private String planetDiameterKM;
+	private String planetMeanSurfaceTempC;
+	private String planetNumberOfMoons;
+	
 	private Planet planet;
 		
 	// builder will basically get the planet file from the UI and will build the planet object to populate the UI fields.
 
-	public PlanetBuilder(ImageView planetImage, TextField planetName, TextField planetDiameterKM,
-			TextField planetMeanSurfaceTempC, TextField planetNumberOfMoons) {
-		this.planetImage = planetImage;
+	public PlanetBuilder(String imageId, String planetName, String planetDiameterKM,
+			String planetMeanSurfaceTempC, String planetNumberOfMoons) {
+		this.imageId = imageId;
 		this.planetName = planetName;
 		this.planetDiameterKM = planetDiameterKM;
 		this.planetMeanSurfaceTempC = planetMeanSurfaceTempC;
@@ -45,41 +56,29 @@ public class PlanetBuilder
 //		this.file = file;
 //	}
 
-	public PlanetBuilder() {
-		// TODO Auto-generated constructor stub
-	}
+//	public PlanetBuilder() {
+//		loadPlanet();
+//	}
 
 	private void savePlanet() {
 		if (!isPlanetReadyToSave())
 			return;
 		savePlanetToFile();
 	}
-//
-//    public void loadPlanetInformationFromFile( File file ) {
-//	    	try 	{
-//	    		readFromFile(file);
-//	    	}
-//	    	catch (FileNotFoundException e) {
-//	    		planet.showErrorAlert("Error: file not found\n" + e.getLocalizedMessage());
-//	    	}
-//	    	catch (NoSuchElementException e) {
-//	    		planet.showErrorAlert("Error: could not load planet information\n" + e.getLocalizedMessage());
-//	    	}
-//    }
-	// delegate??
-	private boolean isPlanetReadyToSave( ) {
+
+    private boolean isPlanetReadyToSave( ) {
 		boolean returnCode = false;
-		String imageId = planetImage.getId();
+//		String imageId = planetImage.getId();
 		
 		if (imageId.compareTo("images/no_image.png") == 0)
 			planet.showErrorAlert("Error: cannot save file\nNo image selected");
-		else if (isEmptyString(planetName.getText()))
+		else if (isEmptyString(planetName))
 			planet.showErrorAlert("Error: cannot save file\nNo name specified");
-		else if (isEmptyString(planetDiameterKM.getText()))
+		else if (isEmptyString(planetDiameterKM))
 			planet.showErrorAlert("Error: cannot save file\nNo diameter specified");
-		else if (isEmptyString(planetMeanSurfaceTempC.getText()))
+		else if (isEmptyString(planetMeanSurfaceTempC))
 			planet.showErrorAlert("Error: cannot save file\nNo temperature specified");
-		else if (isEmptyString(planetNumberOfMoons.getText()))
+		else if (isEmptyString(planetNumberOfMoons))
 			planet.showErrorAlert("Error: cannot save file\nNo number of moons specified");
 		else
 			returnCode = true;
@@ -87,7 +86,6 @@ public class PlanetBuilder
 		return returnCode;
 	}
 	
-	// delegate??
 	private boolean isEmptyString( String stringToCheck ) {
 		if (stringToCheck.isEmpty())
 			return true;
@@ -105,7 +103,6 @@ public class PlanetBuilder
 	    	writePlanetInformationToFile(file, getPlanetInformationString());
     }
     
-    // delegate??
     private void writePlanetInformationToFile( File file, String fileContent ) {
 	    	try	{
 	    		writeToFile(file, fileContent);
@@ -123,17 +120,33 @@ public class PlanetBuilder
     
     private String getPlanetInformationString( ) {
 	    	String planetInformation = "";    	
-	    	planetInformation += planetImage.getId() + "\n";
-	    	planetInformation += planetName.getText() + "\n";
-	    planetInformation += planetDiameterKM.getText() + "\n";
-	    	planetInformation += planetMeanSurfaceTempC.getText() + "\n";
-	    	planetInformation += planetNumberOfMoons.getText() + "\n";
+	    	planetInformation += imageId + "\n";
+	    	planetInformation += planetName + "\n";
+	    planetInformation += planetDiameterKM + "\n";
+	    	planetInformation += planetMeanSurfaceTempC + "\n";
+	    	planetInformation += planetNumberOfMoons + "\n";
 	    	
 	    	return planetInformation;
     }
-    
 //    
-//    // delegate??
+//    private void loadPlanet() {
+//	    	Alert alert = new Alert(AlertType.CONFIRMATION);
+//	    	alert.setTitle("OK to Overwrite?");
+//	    	alert.setContentText("Are you sure you want to overwrite the field values?");
+//	    	alert.showAndWait();
+//	    	
+//	    	if (alert.getResult() == ButtonType.CANCEL)
+//	    		return;
+//	    	
+//	    	FileChooser fileChooser = new FileChooser();
+//	    	fileChooser.getExtensionFilters().add(new ExtensionFilter("TXT files", "*.txt"));
+//	    	File file = fileChooser.showOpenDialog(new Stage());
+//	    	if (file == null)
+//	    		return;
+//	    	
+//	    	loadPlanetInformationFromFile(file);
+//    }
+//    
 //    public void loadPlanetInformationFromFile( File file ) {
 //	    	try 	{
 //	    		readFromFile(file);
@@ -145,7 +158,7 @@ public class PlanetBuilder
 //	    		planet.showErrorAlert("Error: could not load planet information\n" + e.getLocalizedMessage());
 //	    	}
 //    }
-//    
+//
 //    private void readFromFile( File file ) throws FileNotFoundException {
 //		Scanner scanner = new Scanner(file);
 //		//setPlanetImage(scanner.nextLine());
@@ -153,6 +166,10 @@ public class PlanetBuilder
 //		readPlanetDiameter(scanner.nextLine());
 //		readPlanetTemperature(scanner.nextLine());
 //		readPlanetNumberOfMoons(scanner.nextLine());
+////		planet.savePlanetName(scanner.nextLine());
+////		planet.savePlanetDiameter(scanner.nextLine());
+////		planet.savePlanetMeanSurfaceTemp(scanner.nextLine());
+////		planet.savePlanetNumberOfMoon(scanner.nextLine());
 //		scanner.close();
 //    }
 //    
@@ -163,7 +180,8 @@ public class PlanetBuilder
 ////    }
 //    
 //    private void readPlanetName( String name ) {
-//	    	planet.savePlanetName(name);
+//	   // planet.savePlanetD
+//    		planet.savePlanetName(name);
 //    		//planetName.setText(planet.getPlanetName());
 //	    	//fancyPlanetName.setText(planet.getPlanetName());
 //    }
@@ -172,6 +190,7 @@ public class PlanetBuilder
 //	    	if (diameterKM.equals(""))
 //	    		return;
 //	    	
+//	    	diameterKM = diameterKM.replaceAll("[.,]", "");
 //	    	planet.savePlanetDiameter(diameterKM);
 //	    //	planetDiameterM.setText(planet.getPlanetDiameterM());
 //	    	//planetDiameterKM.setText(planet.getPlanetDiameterKM());
@@ -193,5 +212,5 @@ public class PlanetBuilder
 //	    	planet.savePlanetNumberOfMoons(numberOfMoons);
 //	   // 	planetNumberOfMoons.setText(planet.getPlanetNumberOfMoons());
 //    }
-	
+//	
 }
