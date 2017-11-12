@@ -1,17 +1,13 @@
 package planet.delegators;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 
 public class Planet {
-	/// this will need to be restructured to follow robinson's clean coding rules
 	private String planetImagePath;
 	private Image planetImage;
 	private String planetName;
@@ -79,6 +75,7 @@ public class Planet {
     }
     
     private void checkDiameterToSet( String planetDiameterKMText ) {
+		planetDiameterKMText = planetDiameterKMText.replaceAll("[,]", "");
     		double diameterKM = Double.parseDouble(planetDiameterKMText);
 
     		if (diameterKM < 0 || diameterKM > 200000)
@@ -100,7 +97,6 @@ public class Planet {
     {
     		if (planetDiameterKM == -1)
     			return "";
-    		
     		return String.format("%,.1f", planetDiameterKM);
 
     }
@@ -110,7 +106,8 @@ public class Planet {
 	    		checkTempToSet(planetSurfaceTempCText);
 	    	}
 	    	catch (NumberFormatException e) {
-	    		this.showErrorAlert("Error: Invalid temperature (C) input\n" + e.getLocalizedMessage());
+	    		this.showErrorAlert("Error: Invalid temperature (C) input\n" 
+	    				+ e.getLocalizedMessage());
 	    	}
     }
     
@@ -167,15 +164,4 @@ public class Planet {
 	    	System.err.println(errorMessage);
 	    	alert.showAndWait();
     }
-/*
-	public String getPlanetInformationString() {
-	    	String planetInformation = "";    	
-	    	planetInformation += planetImage + "\n";
-	    	planetInformation += planetName + "\n";
-	    	planetInformation += planetDiameterKM + "\n";
-	    	planetInformation += planetMeanSurfaceTempC + "\n";
-	    	planetInformation += planetNumberOfMoons + "\n";
-	    	
-	    	return planetInformation;
-	}*/
 }
