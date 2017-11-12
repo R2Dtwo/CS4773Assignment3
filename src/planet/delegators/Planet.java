@@ -3,14 +3,12 @@ package planet.delegators;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 
 public class Planet {
 	private String planetImagePath;
 	private Image planetImage;
-	private String planetName;
+	private static String planetName;
 	private double planetDiameterKM;
 	private double planetDiameterM;
 	private double planetMeanSurfaceTempC;
@@ -32,7 +30,7 @@ public class Planet {
     			setImagePath(imagePath);
 	    	}
 	    	catch (FileNotFoundException e) {
-	    		showErrorAlert("Error: invalid file\n" + e.getLocalizedMessage());
+	    		PlanetError.showErrorAlert("Error: invalid file\n" + e.getLocalizedMessage());
 	    	}
     }
     
@@ -51,26 +49,41 @@ public class Planet {
     }
      
     public void savePlanetName(String name) {
+//    		if(checkPlanetName(name)) {
+//    			planetName = name;
+//    		}
 	    	if (name.length() < 0 || name.length() > 256)
-	    		this.showErrorAlert("Error: Planet name must be between 1 and 256 characters long");
+	    		PlanetError.showErrorAlert("Error: Planet name must be between 1 and 256 characters long");
 	    	else if (name.matches("^[A-Za-z0-9 \\-\\.]+$")) {
 	    		planetName = name;
 	    		return;
 	    	}
 	    	else
-	    		this.showErrorAlert("Error: Planet name contains invalid characters [A-Za-z0-9 -.]");
+	    		PlanetError.showErrorAlert("Error: Planet name contains invalid characters [A-Za-z0-9 -.]");
     }
+    
+//    public static boolean checkPlanetName(String name) {
+//	    	if (name.length() < 0 || name.length() > 256) {
+//	    		PlanetError.showErrorAlert("Error: Planet name must be between 1 and 256 characters long");
+//	    		return false;
+//	    	}
+//	    	else if (!name.matches("^[A-Za-z0-9 \\-\\.]+$")) {
+//	    		PlanetError.showErrorAlert("Error: Planet name contains invalid characters [A-Za-z0-9 -.]");
+//	    		return false;
+//	    }
+//	    return true;	
+//    }
     
     public String getPlanetName() {
     		return planetName;
     }
 
-    public void savePlanetDiameter( String planetDiameterKMText ) {
-	    	try	{
+    public void savePlanetDiameter( String planetDiameterKMText ) {    
+    		try	{
 	    		checkDiameterToSet(planetDiameterKMText);
 	    	}
 	    	catch (NumberFormatException e) {
-	    		this.showErrorAlert("Error: Invalid diameter (KM) input\n" + e.getLocalizedMessage());
+	    		PlanetError.showErrorAlert("Error: Invalid diameter (KM) input\n" + e.getLocalizedMessage());
 	    	}
     }
     
@@ -85,16 +98,14 @@ public class Planet {
 		planetDiameterM = diameterKM * 0.621371;
     }
     
-    public String getPlanetDiameterM()
-    {
+    public String getPlanetDiameterM() {
     		if (planetDiameterM == -1)
     			return "";
     		
     		return String.format("%,.1f", planetDiameterM);
     }
     
-    public String getPlanetDiameterKM()
-    {
+    public String getPlanetDiameterKM() {
     		if (planetDiameterKM == -1)
     			return "";
     		return String.format("%,.1f", planetDiameterKM);
@@ -106,7 +117,7 @@ public class Planet {
 	    		checkTempToSet(planetSurfaceTempCText);
 	    	}
 	    	catch (NumberFormatException e) {
-	    		this.showErrorAlert("Error: Invalid temperature (C) input\n" 
+	    		PlanetError.showErrorAlert("Error: Invalid temperature (C) input\n" 
 	    				+ e.getLocalizedMessage());
 	    	}
     }
@@ -138,7 +149,7 @@ public class Planet {
     			checkMoonsToSet(numberOfMoonsText);
 	    	}
 	    	catch (NumberFormatException e) {
-	    		this.showErrorAlert("Error: Invalid Integer input\n" + e.getLocalizedMessage());
+	    		PlanetError.showErrorAlert("Error: Invalid Integer input\n" + e.getLocalizedMessage());
 	    	}
     }
     
@@ -157,11 +168,11 @@ public class Planet {
     		return String.format("%,d", planetNumberOfMoons);
     }
     
-    public void showErrorAlert( String errorMessage ) {
-	    	Alert alert = new Alert(AlertType.ERROR);
-	    	alert.setTitle("Invalid Planet Input");
-	    	alert.setContentText(errorMessage);
-	    	System.err.println(errorMessage);
-	    	alert.showAndWait();
-    }
+//    public void showErrorAlert( String errorMessage ) {
+//	    	Alert alert = new Alert(AlertType.ERROR);
+//	    	alert.setTitle("Invalid Planet Input");
+//	    	alert.setContentText(errorMessage);
+//	    	System.err.println(errorMessage);
+//	    	alert.showAndWait();
+//    }
 }

@@ -8,6 +8,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 import planet.delegators.Planet;
+import planet.delegators.PlanetError;
 
 public class PlanetFileBuilder {
 	private String imageId;
@@ -38,15 +39,15 @@ public class PlanetFileBuilder {
 		boolean returnCode = false;
 		
 		if (imageId.compareTo("images/no_image.png") == 0)
-			planet.showErrorAlert("Error: cannot save file\nNo image selected");
+			PlanetError.showErrorAlert("Error: cannot save file\nNo image selected");
 		else if (isEmptyString(planetName))
-			planet.showErrorAlert("Error: cannot save file\nNo name specified");
+			PlanetError.showErrorAlert("Error: cannot save file\nNo name specified");
 		else if (isEmptyString(planetDiameterKM))
-			planet.showErrorAlert("Error: cannot save file\nNo diameter specified");
+			PlanetError.showErrorAlert("Error: cannot save file\nNo diameter specified");
 		else if (isEmptyString(planetMeanSurfaceTempC))
-			planet.showErrorAlert("Error: cannot save file\nNo temperature specified");
+			PlanetError.showErrorAlert("Error: cannot save file\nNo temperature specified");
 		else if (isEmptyString(planetNumberOfMoons))
-			planet.showErrorAlert("Error: cannot save file\nNo number of moons specified");
+			PlanetError.showErrorAlert("Error: cannot save file\nNo number of moons specified");
 		else
 			returnCode = true;
 	
@@ -75,7 +76,7 @@ public class PlanetFileBuilder {
 	    		writeToFile(file, fileContent);
 	    	}
 	    	catch (IOException e) {
-	    		planet.showErrorAlert("Error: Did not write Planet to file\n" + e.getLocalizedMessage());
+	    		PlanetError.showErrorAlert("Error: Did not write Planet to file\n" + e.getLocalizedMessage());
 	    	}
     }
     
@@ -85,7 +86,7 @@ public class PlanetFileBuilder {
 		fileWriter.close();
     }
     
-    private String getPlanetInformationString( ) {
+    public String getPlanetInformationString( ) {
 	    	String planetInformation = "";    	
 	    	planetInformation += imageId + "\n";
 	    	planetInformation += planetName + "\n";
@@ -95,5 +96,4 @@ public class PlanetFileBuilder {
 	    	
 	    	return planetInformation;
     }
-
 }
