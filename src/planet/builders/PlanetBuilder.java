@@ -15,7 +15,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 import planet.delegators.Planet;
-import planet.delegators.PlanetError;
 
 public class PlanetBuilder {
 	Planet planet;
@@ -48,10 +47,10 @@ public class PlanetBuilder {
 	    		readFromFile(file);
 	    	}
 	    	catch (FileNotFoundException e) {
-	    		PlanetError.showErrorAlert("Error: file not found\n" + e.getLocalizedMessage());
+	    		planet.showErrorAlert("Error: file not found\n" + e.getLocalizedMessage());
 	    	}
 	    	catch (NoSuchElementException e) {
-	    		PlanetError.showErrorAlert("Error: could not load planet information\n" + e.getLocalizedMessage());
+	    		planet.showErrorAlert("Error: could not load planet information\n" + e.getLocalizedMessage());
 	    	}
 	}
 

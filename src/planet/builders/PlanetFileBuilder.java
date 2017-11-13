@@ -8,16 +8,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 import planet.delegators.Planet;
-import planet.delegators.PlanetError;
 
 public class PlanetFileBuilder {
+	private Planet planet;
 	private String imageId;
 	private String planetName;
 	private String planetDiameterKM;
 	private String planetMeanSurfaceTempC;
 	private String planetNumberOfMoons;
 	
-	private Planet planet;
 			
 	public PlanetFileBuilder(Planet planet) {
 		this.planet = planet;
@@ -39,15 +38,15 @@ public class PlanetFileBuilder {
 		boolean returnCode = false;
 		
 		if (imageId.compareTo("images/no_image.png") == 0)
-			PlanetError.showErrorAlert("Error: cannot save file\nNo image selected");
+			planet.showErrorAlert("Error: cannot save file\nNo image selected");
 		else if (isEmptyString(planetName))
-			PlanetError.showErrorAlert("Error: cannot save file\nNo name specified");
+			planet.showErrorAlert("Error: cannot save file\nNo name specified");
 		else if (isEmptyString(planetDiameterKM))
-			PlanetError.showErrorAlert("Error: cannot save file\nNo diameter specified");
+			planet.showErrorAlert("Error: cannot save file\nNo diameter specified");
 		else if (isEmptyString(planetMeanSurfaceTempC))
-			PlanetError.showErrorAlert("Error: cannot save file\nNo temperature specified");
+			planet.showErrorAlert("Error: cannot save file\nNo temperature specified");
 		else if (isEmptyString(planetNumberOfMoons))
-			PlanetError.showErrorAlert("Error: cannot save file\nNo number of moons specified");
+			planet.showErrorAlert("Error: cannot save file\nNo number of moons specified");
 		else
 			returnCode = true;
 	
@@ -76,7 +75,7 @@ public class PlanetFileBuilder {
 	    		writeToFile(file, fileContent);
 	    	}
 	    	catch (IOException e) {
-	    		PlanetError.showErrorAlert("Error: Did not write Planet to file\n" + e.getLocalizedMessage());
+	    		planet.showErrorAlert("Error: Did not write Planet to file\n" + e.getLocalizedMessage());
 	    	}
     }
     
